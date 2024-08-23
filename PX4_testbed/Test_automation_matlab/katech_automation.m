@@ -23,7 +23,7 @@ formattedDate = datestr(currentDateTime, 'yyyymmdd');
 % reference 파일의 row와 column 갯수는 내가 뽑고 싶은 히트맵의 row와 column의 갯수가 같아야한다.
 % reference 파일의 row size = 내가 뽑고 싶은 히트맵의 row size
 % reference 파일의 column size = 내가 뽑고 싶은 히트맵의 column size
-load_reference_heatmap = load('heatmap_mat_format_max_xy_error_original_fault_1_0_0_reference.mat'); % reference heatmap 파일을 로드합니다.
+load_reference_heatmap = load('heatmap_mat_format_max_xy_error_original_fault_3_0_0_reference.mat'); % reference heatmap 파일을 로드합니다.
 reference_heatmap = load_reference_heatmap.heatmap_mat_format_max_xy_error_original; %구조체에서 데이터 추출
 threshold_value = 4; % 임계값 설정
 
@@ -33,9 +33,9 @@ threshold_value = 4; % 임계값 설정
 start_date = str2double(formattedDate);
 
 % 이 변수는 폴더이름과 rostopic에 사용된다.
-motor_failure_number = 1;
-motor_failure_number1 = 7;
-motor_failure_number2 = 0;
+motor_failure_number = 3;
+motor_failure_number1 = 4;
+motor_failure_number2 = 7;
 
 
 %gazebo gui를 키면 25초로 설정
@@ -148,7 +148,7 @@ for b = 1:num_x
         % 기준 히트맵의 값을 확인하고 임계값 초과 시 생략
         if reference_heatmap(num_x-b+1, a) > threshold_value
             fprintf('Threshold exceeded at (%d, %d), skipping simulation.\n', num_x-b+1, a);
-            
+
             % 히트맵 변수들에 100 설정
             heatmap_mat_format_endstep_x_error(num_x-b+1, a) = 100;
             heatmap_mat_format_endstep_y_error(num_x-b+1, a) = 100;
@@ -161,7 +161,7 @@ for b = 1:num_x
             heatmap_mat_format_max_xy_error(num_x-b+1, a) = 100;
 
             % 원본 히트맵 변수들에 100 설정
-            
+
             heatmap_mat_format_endstep_x_error_original(num_x-b+1, a) = 100;
             heatmap_mat_format_endstep_y_error_original(num_x-b+1, a) = 100;
             heatmap_mat_format_endstep_z_error_original(num_x-b+1, a) = 100;
@@ -171,7 +171,7 @@ for b = 1:num_x
             heatmap_mat_format_max_y_error_original(num_x-b+1, a) = 100;
             heatmap_mat_format_max_z_error_original(num_x-b+1, a) = 100;
             heatmap_mat_format_max_xy_error_original(num_x-b+1, a) = 100;
-            
+
 
             heatmap_mat_format_max_roll(num_x-b+1, a) = 100;
             heatmap_mat_format_max_roll_original(num_x-b+1, a) = 100;
@@ -423,6 +423,10 @@ filename = sprintf('%s/%dby%d_increment_%d_fault_%d_%d_%d_date_%d.mat', save_fol
 % 변수들을 저장 (MAT 파일 형식 7.3 지정)
 save(filename, '-v7.3');
 
+% 히트맵 제목
+titlename = sprintf('xy maximum error for No. %d, %d, %d fault', motor_failure_number, motor_failure_number1,motor_failure_number2);
+titlename1 = sprintf('roll maximum error for No. %d, %d, %d fault', motor_failure_number, motor_failure_number1,motor_failure_number2);
+titlename2 = sprintf('xy max error at Last Time Step for No. %d, %d, %d fault', motor_failure_number, motor_failure_number1,motor_failure_number2);
 
 
 %% Heatmap without value display 
@@ -436,7 +440,8 @@ colormap('jet');
 caxis([0 5])
 set(gca,'XTickLabel',[],'YTickLabel',[],'YDir','normal')
 axis square
-title('heatmap mat format max xy error original')
+title(strcat(titlename, ' original'))
+
 
 figure(2);
 err_xy_matrix_rotated = rot90(rot90(rot90(rot90(heatmap_mat_format_max_xy_error))));
@@ -447,7 +452,7 @@ colormap('jet');
 caxis([0 5])
 set(gca,'XTickLabel',[],'YTickLabel',[],'YDir','normal')
 axis square
-title('heatmap mat format max xy error')
+title(titlename)
 
 figure(3);
 err_xy_matrix_rotated = rot90(rot90(rot90(rot90(heatmap_mat_format_max_roll_original))));
@@ -458,7 +463,7 @@ colormap('jet');
 caxis([0 50])
 set(gca,'XTickLabel',[],'YTickLabel',[],'YDir','normal')
 axis square
-title('heatmap mat format max roll original')
+title(strcat(titlename1, ' original'))
 
 figure(4);
 err_xy_matrix_rotated = rot90(rot90(rot90(rot90(heatmap_mat_format_max_roll))));
@@ -469,7 +474,7 @@ colormap('jet');
 caxis([0 50])
 set(gca,'XTickLabel',[],'YTickLabel',[],'YDir','normal')
 axis square
-title('heatmap mat format max roll')
+title(titlename1)
 
 figure(5);
 err_xy_matrix_rotated = rot90(rot90(rot90(rot90(heatmap_mat_format_endstep_xy_error_original))));
@@ -480,7 +485,7 @@ colormap('jet');
 caxis([0 5])
 set(gca,'XTickLabel',[],'YTickLabel',[],'YDir','normal')
 axis square
-title('heatmap mat format endstep xy error original')
+title(strcat(titlename2, ' original'))
 
 figure(6);
 err_xy_matrix_rotated = rot90(rot90(rot90(rot90(heatmap_mat_format_endstep_xy_error))));
@@ -491,7 +496,7 @@ colormap('jet');
 caxis([0 5])
 set(gca,'XTickLabel',[],'YTickLabel',[],'YDir','normal')
 axis square
-title('heatmap mat format endstep xy error')
+title(titlename2)
 
 
 % 
@@ -539,27 +544,27 @@ title('heatmap mat format endstep xy error')
 % axis square
 % title('heatmap mat format endstep y error')
 
-figure(9);
-err_xy_matrix_rotated = rot90(rot90(rot90(rot90(heatmap_mat_format_endstep_z_error_original))));
-err_xy_matrix_flipped = fliplr(err_xy_matrix_rotated);
-imagesc(err_xy_matrix_flipped);
-colorbar;
-colormap('jet');
-caxis([0 5])
-set(gca,'XTickLabel',[],'YTickLabel',[],'YDir','normal')
-axis square
-title('heatmap mat format endstep z error orginal')
-
-figure(10);
-err_xy_matrix_rotated = rot90(rot90(rot90(rot90(heatmap_mat_format_endstep_z_error))));
-err_xy_matrix_flipped = fliplr(err_xy_matrix_rotated);
-imagesc(err_xy_matrix_flipped);
-colorbar;
-colormap('jet');
-caxis([0 5])
-set(gca,'XTickLabel',[],'YTickLabel',[],'YDir','normal')
-axis square
-title('heatmap mat format endstep z error')
+% figure(9);
+% err_xy_matrix_rotated = rot90(rot90(rot90(rot90(heatmap_mat_format_endstep_z_error_original))));
+% err_xy_matrix_flipped = fliplr(err_xy_matrix_rotated);
+% imagesc(err_xy_matrix_flipped);
+% colorbar;
+% colormap('jet');
+% caxis([0 5])
+% set(gca,'XTickLabel',[],'YTickLabel',[],'YDir','normal')
+% axis square
+% title('heatmap mat format endstep z error orginal')
+% 
+% figure(10);
+% err_xy_matrix_rotated = rot90(rot90(rot90(rot90(heatmap_mat_format_endstep_z_error))));
+% err_xy_matrix_flipped = fliplr(err_xy_matrix_rotated);
+% imagesc(err_xy_matrix_flipped);
+% colorbar;
+% colormap('jet');
+% caxis([0 5])
+% set(gca,'XTickLabel',[],'YTickLabel',[],'YDir','normal')
+% axis square
+% title('heatmap mat format endstep z error')
 
 
 
@@ -609,33 +614,33 @@ title('heatmap mat format endstep z error')
 % title('heatmap mat format y error')
 
 
-figure(15);
-err_xy_matrix_rotated = rot90(rot90(rot90(rot90(heatmap_mat_format_max_z_error_original))));
-err_xy_matrix_flipped = fliplr(err_xy_matrix_rotated);
-imagesc(err_xy_matrix_flipped);
-colorbar;
-colormap('jet');
-caxis([0 5])
-set(gca,'XTickLabel',[],'YTickLabel',[],'YDir','normal')
-axis square
-title('heatmap mat format max z error orginal')
-
-figure(16);
-err_xy_matrix_rotated = rot90(rot90(rot90(rot90(heatmap_mat_format_max_z_error))));
-err_xy_matrix_flipped = fliplr(err_xy_matrix_rotated);
-imagesc(err_xy_matrix_flipped);
-colorbar;
-colormap('jet');
-caxis([0 5])
-set(gca,'XTickLabel',[],'YTickLabel',[],'YDir','normal')
-axis square
-title('heatmap mat format z error')
+% figure(15);
+% err_xy_matrix_rotated = rot90(rot90(rot90(rot90(heatmap_mat_format_max_z_error_original))));
+% err_xy_matrix_flipped = fliplr(err_xy_matrix_rotated);
+% imagesc(err_xy_matrix_flipped);
+% colorbar;
+% colormap('jet');
+% caxis([0 5])
+% set(gca,'XTickLabel',[],'YTickLabel',[],'YDir','normal')
+% axis square
+% title('heatmap mat format max z error orginal')
+% 
+% figure(16);
+% err_xy_matrix_rotated = rot90(rot90(rot90(rot90(heatmap_mat_format_max_z_error))));
+% err_xy_matrix_flipped = fliplr(err_xy_matrix_rotated);
+% imagesc(err_xy_matrix_flipped);
+% colorbar;
+% colormap('jet');
+% caxis([0 5])
+% set(gca,'XTickLabel',[],'YTickLabel',[],'YDir','normal')
+% axis square
+% title('heatmap mat format z error')
 
 %% Heatmap with value display
 
 figure(20);
 hh = heatmap(wind_upper:-increment:wind_lower, wind_lower:increment:wind_upper,rot90(rot90(heatmap_mat_format_max_xy_error_original)));
-hh.Title = 'heatmap mat format max xy error original';
+hh.Title = strcat(titlename, ' original');
 hh.XLabel = 'Wind X';
 hh.YLabel = 'Wind Y';
 hh.Colormap = jet;
@@ -644,7 +649,7 @@ hh.CellLabelColor = 'none';
 
 figure(21);
 jj = heatmap(wind_upper:-increment:wind_lower, wind_lower:increment:wind_upper,rot90(rot90(heatmap_mat_format_max_xy_error)));
-jj.Title = 'heatmap mat format max xy error';
+jj.Title = titlename;
 jj.XLabel = 'Wind X';
 jj.YLabel = 'Wind Y';
 jj.Colormap = jet;
@@ -653,7 +658,7 @@ jj.CellLabelColor = 'none';
 
 figure(22);
 kk = heatmap(wind_upper:-increment:wind_lower, wind_lower:increment:wind_upper,rot90(rot90(heatmap_mat_format_max_roll_original)));
-kk.Title = 'heatmap mat format max roll original)';
+kk.Title = strcat(titlename1, ' original');
 kk.XLabel = 'Wind X';
 kk.YLabel = 'Wind Y';
 kk.Colormap = jet;
@@ -662,7 +667,7 @@ kk.CellLabelColor = 'none';
 
 figure(23);
 ll = heatmap(wind_upper:-increment:wind_lower, wind_lower:increment:wind_upper,rot90(rot90(heatmap_mat_format_max_roll)));
-ll.Title = 'heatmap mat format max roll';
+ll.Title = titlename1;
 ll.XLabel = 'Wind X';
 ll.YLabel = 'Wind Y';
 ll.Colormap = jet;
@@ -672,7 +677,7 @@ ll.CellLabelColor = 'none';
 
 figure(24);
 asas = heatmap(wind_upper:-increment:wind_lower, wind_lower:increment:wind_upper,rot90(rot90(heatmap_mat_format_endstep_xy_error_original)));
-asas.Title = 'heatmap mat format endstep xy error original';
+asas.Title = strcat(titlename2, ' original');
 asas.XLabel = 'Wind X';
 asas.YLabel = 'Wind Y';
 asas.Colormap = jet;
@@ -681,7 +686,7 @@ asas.CellLabelColor = 'none';
 
 figure(25);
 bsbs = heatmap(wind_upper:-increment:wind_lower, wind_lower:increment:wind_upper,rot90(rot90(heatmap_mat_format_endstep_xy_error)));
-bsbs.Title = 'heatmap mat format endstep xy error';
+bsbs.Title = titlename2;
 bsbs.XLabel = 'Wind X';
 bsbs.YLabel = 'Wind Y';
 bsbs.Colormap = jet;
@@ -725,23 +730,23 @@ bsbs.CellLabelColor = 'none';
 % pp.ColorLimits = [0 5];
 % pp.CellLabelColor = 'none';
 
-figure(28);
-qq = heatmap(wind_upper:-increment:wind_lower, wind_lower:increment:wind_upper,rot90(rot90(heatmap_mat_format_endstep_z_error_original)));
-qq.Title = 'heatmap mat format endstep z error orginal';
-qq.XLabel = 'Wind X';
-qq.YLabel = 'Wind Y';
-qq.Colormap = jet;
-qq.ColorLimits = [0 5];
-qq.CellLabelColor = 'none';
-
-figure(29);
-rr = heatmap(wind_upper:-increment:wind_lower, wind_lower:increment:wind_upper,rot90(rot90(heatmap_mat_format_endstep_z_error)));
-rr.Title = 'heatmap mat format endstep z error';
-rr.XLabel = 'Wind X';
-rr.YLabel = 'Wind Y';
-rr.Colormap = jet;
-rr.ColorLimits = [0 5];
-rr.CellLabelColor = 'none';
+% figure(28);
+% qq = heatmap(wind_upper:-increment:wind_lower, wind_lower:increment:wind_upper,rot90(rot90(heatmap_mat_format_endstep_z_error_original)));
+% qq.Title = 'heatmap mat format endstep z error orginal';
+% qq.XLabel = 'Wind X';
+% qq.YLabel = 'Wind Y';
+% qq.Colormap = jet;
+% qq.ColorLimits = [0 5];
+% qq.CellLabelColor = 'none';
+% 
+% figure(29);
+% rr = heatmap(wind_upper:-increment:wind_lower, wind_lower:increment:wind_upper,rot90(rot90(heatmap_mat_format_endstep_z_error)));
+% rr.Title = 'heatmap mat format endstep z error';
+% rr.XLabel = 'Wind X';
+% rr.YLabel = 'Wind Y';
+% rr.Colormap = jet;
+% rr.ColorLimits = [0 5];
+% rr.CellLabelColor = 'none';
 
 
 
@@ -782,23 +787,24 @@ rr.CellLabelColor = 'none';
 % vv.ColorLimits = [0 5];
 % vv.CellLabelColor = 'none';
 
-figure(34);
-ww = heatmap(wind_upper:-increment:wind_lower, wind_lower:increment:wind_upper,rot90(rot90(heatmap_mat_format_max_z_error_original)));
-ww.Title = 'heatmap mat format max z error orginal';
-ww.XLabel = 'Wind X';
-ww.YLabel = 'Wind Y';
-ww.Colormap = jet;
-ww.ColorLimits = [0 5];
-ww.CellLabelColor = 'none';
 
-figure(35);
-xx = heatmap(wind_upper:-increment:wind_lower, wind_lower:increment:wind_upper,rot90(rot90(heatmap_mat_format_max_z_error)));
-xx.Title = 'heatmap mat format max z error';
-xx.XLabel = 'Wind X';
-xx.YLabel = 'Wind Y';
-xx.Colormap = jet;
-xx.ColorLimits = [0 5];
-xx.CellLabelColor = 'none';
+% figure(34);
+% ww = heatmap(wind_upper:-increment:wind_lower, wind_lower:increment:wind_upper,rot90(rot90(heatmap_mat_format_max_z_error_original)));
+% ww.Title = 'heatmap mat format max z error orginal';
+% ww.XLabel = 'Wind X';
+% ww.YLabel = 'Wind Y';
+% ww.Colormap = jet;
+% ww.ColorLimits = [0 5];
+% ww.CellLabelColor = 'none';
+% 
+% figure(35);
+% xx = heatmap(wind_upper:-increment:wind_lower, wind_lower:increment:wind_upper,rot90(rot90(heatmap_mat_format_max_z_error)));
+% xx.Title = 'heatmap mat format max z error';
+% xx.XLabel = 'Wind X';
+% xx.YLabel = 'Wind Y';
+% xx.Colormap = jet;
+% xx.ColorLimits = [0 5];
+% xx.CellLabelColor = 'none';
 
 
 toc;
