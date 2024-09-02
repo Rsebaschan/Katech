@@ -145,39 +145,39 @@ pause(10);
 for b = 1:num_x
     for a = 1:num_y
 
-        % % 기준 히트맵의 값을 확인하고 임계값 초과 시 생략
-        % if reference_heatmap(a, b) > threshold_value
-        %     fprintf('Threshold exceeded at (%d, %d), skipping simulation.\n', a, b);
-        % 
-        %     % 히트맵 변수들에 100 설정
-        %     heatmap_mat_format_endstep_x_error(a, b) = 100;
-        %     heatmap_mat_format_endstep_y_error(a, b) = 100;
-        %     heatmap_mat_format_endstep_z_error(a, b) = 100;
-        %     heatmap_mat_format_endstep_xy_error(a, b) = 100;
-        % 
-        %     heatmap_mat_format_max_x_error(a, b) = 100;
-        %     heatmap_mat_format_max_y_error(a, b) = 100;
-        %     heatmap_mat_format_max_z_error(a, b) = 100;
-        %     heatmap_mat_format_max_xy_error(a, b) = 100;
-        % 
-        %     % 원본 히트맵 변수들에 100 설정
-        % 
-        %     heatmap_mat_format_endstep_x_error_original(a, b) = 100;
-        %     heatmap_mat_format_endstep_y_error_original(a, b) = 100;
-        %     heatmap_mat_format_endstep_z_error_original(a, b) = 100;
-        %     heatmap_mat_format_endstep_xy_error_original(a, b) = 100;
-        % 
-        %     heatmap_mat_format_max_x_error_original(a, b) = 100;
-        %     heatmap_mat_format_max_y_error_original(a, b) = 100;
-        %     heatmap_mat_format_max_z_error_original(a, b) = 100;
-        %     heatmap_mat_format_max_xy_error_original(a, b) = 100;
-        % 
-        % 
-        %     heatmap_mat_format_max_roll(a, b) = 100;
-        %     heatmap_mat_format_max_roll_original(a, b) = 100;
-        % 
-        %     continue;
-        % end
+        % 기준 히트맵의 값을 확인하고 임계값 초과 시 생략
+        if reference_heatmap(a, b) > threshold_value
+            fprintf('Threshold exceeded at (%d, %d), skipping simulation.\n', a, b);
+
+            % 히트맵 변수들에 100 설정
+            heatmap_mat_format_endstep_x_error(a, b) = 100;
+            heatmap_mat_format_endstep_y_error(a, b) = 100;
+            heatmap_mat_format_endstep_z_error(a, b) = 100;
+            heatmap_mat_format_endstep_xy_error(a, b) = 100;
+
+            heatmap_mat_format_max_x_error(a, b) = 100;
+            heatmap_mat_format_max_y_error(a, b) = 100;
+            heatmap_mat_format_max_z_error(a, b) = 100;
+            heatmap_mat_format_max_xy_error(a, b) = 100;
+
+            % 원본 히트맵 변수들에 100 설정
+
+            heatmap_mat_format_endstep_x_error_original(a, b) = 100;
+            heatmap_mat_format_endstep_y_error_original(a, b) = 100;
+            heatmap_mat_format_endstep_z_error_original(a, b) = 100;
+            heatmap_mat_format_endstep_xy_error_original(a, b) = 100;
+
+            heatmap_mat_format_max_x_error_original(a, b) = 100;
+            heatmap_mat_format_max_y_error_original(a, b) = 100;
+            heatmap_mat_format_max_z_error_original(a, b) = 100;
+            heatmap_mat_format_max_xy_error_original(a, b) = 100;
+
+
+            heatmap_mat_format_max_roll(a, b) = 100;
+            heatmap_mat_format_max_roll_original(a, b) = 100;
+
+            continue;
+        end
 
 
         system(open_roscore_for_simulink);
@@ -432,7 +432,7 @@ save(filename, '-v7.3');
 
 %% Heatmap with value display
 
-figure(20);
+figure();
 hh = heatmap(wind_lower:increment:wind_upper, wind_lower:increment:wind_upper,heatmap_mat_format_max_xy_error_original);
 hh.Title = strcat(titlename, ' original');
 hh.XLabel = 'Wind Y';
@@ -442,7 +442,7 @@ hh.ColorLimits = [0 5];
 hh.CellLabelColor = 'none';
 hh.GridVisible = 'off';
 
-figure(21);
+figure();
 jj = heatmap(wind_lower:increment:wind_upper, wind_lower:increment:wind_upper,heatmap_mat_format_max_xy_error);
 jj.Title = titlename;
 jj.XLabel = 'Wind Y';
@@ -452,7 +452,7 @@ jj.ColorLimits = [0 5];
 jj.CellLabelColor = 'none';
 jj.GridVisible = 'off';
 
-figure(22);
+figure();
 kk = heatmap(wind_lower:increment:wind_upper, wind_lower:increment:wind_upper,heatmap_mat_format_max_roll_original);
 kk.Title = strcat(titlename1, ' original');
 kk.XLabel = 'Wind Y';
@@ -462,7 +462,7 @@ kk.ColorLimits = [0 30];
 kk.CellLabelColor = 'none';
 kk.GridVisible = 'off';
 
-figure(23);
+figure();
 ll = heatmap(wind_lower:increment:wind_upper, wind_lower:increment:wind_upper,heatmap_mat_format_max_roll);
 ll.Title = titlename1;
 ll.XLabel = 'Wind Y';
@@ -473,7 +473,7 @@ ll.CellLabelColor = 'none';
 ll.GridVisible = 'off';
 
 
-figure(24);
+figure();
 asas = heatmap(wind_lower:increment:wind_upper, wind_lower:increment:wind_upper,heatmap_mat_format_endstep_xy_error_original);
 asas.Title = strcat(titlename2, ' original');
 asas.XLabel = 'Wind Y';
@@ -483,7 +483,7 @@ asas.ColorLimits = [0 5];
 asas.CellLabelColor = 'none';
 asas.GridVisible = 'off';
 
-figure(25);
+figure();
 bsbs = heatmap(wind_lower:increment:wind_upper, wind_lower:increment:wind_upper,heatmap_mat_format_endstep_xy_error);
 bsbs.Title = titlename2;
 bsbs.XLabel = 'Wind Y';
